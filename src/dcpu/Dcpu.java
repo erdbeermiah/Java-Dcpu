@@ -158,22 +158,6 @@ public class Dcpu {
 					System.exit(1);
 			}
 			
-			/*
-				Values: (6 bits)
-					0x00-0x07: register (A, B, C, X, Y, Z, I or J, in that order)
-					0x08-0x0f: [register]
-					0x10-0x17: [next word + register]
-						0x18: POP / [SP++]
-						0x19: PEEK / [SP]
-						0x1a: PUSH / [--SP]
-						0x1b: SP
-						0x1c: PC
-						0x1d: O
-						0x1e: [next word]
-						0x1f: next word (literal)
-					0x20-0x3f: literal value 0x00-0x1f (literal)
-			*/
-			
 			switch (op) {
 				case 0x2: case 0x3: case 0x4: case 0x5: case 0x7: case 0x8:
 					ram[OV][0] = (w[wPos] >> SHORT_SHIFT) & SHORT_MASK;
