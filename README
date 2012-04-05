@@ -1,0 +1,12 @@
+
+Just another DCPU implementation.
+Language: Java
+Inspiration: https://github.com/swetland/dcpu16
+           : http://0x10c.com/
+           : http://0x10c.com/doc/dcpu-16.txt
+
+>> TODO <<
+ - Unit tests
+ - A lot of funny stuff ^.^
+
+gz Miah
