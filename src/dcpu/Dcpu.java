@@ -169,7 +169,7 @@ public class Dcpu {
 	}
 	
 	public String getHeader () {
-		return "|__PC__|__SP__|__OV__|_SKIP_|__A___|__B___|__C___|__X___|__Y___|__Z___|__I___|__J___|||_OP_|_A__|_B__|";
+		return "|_PC_|_SP_|_OV_|SKIP|_A__|_B__|_C__|_X__|_Y__|_Z__|_I__|_J__|||_OP_|_A__|_B__|";
 	}
 	
 	@Override
@@ -187,9 +187,9 @@ public class Dcpu {
 		       hex(ram[REG][5])  +" | "+
 		       hex(ram[REG][6])  +" | "+
 		       hex(ram[REG][7])  +" ||| "+
-		       hex((ram[MEM][ram[PC][0]] & OP_MASK), 2) +" | "+
-		       hex((ram[MEM][ram[PC][0]] >> A_SHIFT) & A_MASK, 2) +" | "+
-		       hex((ram[MEM][ram[PC][0]] >> B_SHIFT) & B_MASK, 2) +" |";
+		       hex((ram[MEM][ram[PC][0]] & OP_MASK)) +" | "+
+		       hex((ram[MEM][ram[PC][0]] >> A_SHIFT) & A_MASK) +" | "+
+		       hex((ram[MEM][ram[PC][0]] >> B_SHIFT) & B_MASK) +" |";
 	}
 	
 	public static void main(String[] args) {
@@ -229,7 +229,7 @@ public class Dcpu {
 	}
 	
 	static String hex (int i) {
-		return hex(i, 4);
+		return hex(i, 2);
 	}
 	static String hex (int i, int l) {
 		String h = Integer.toHexString(i).toUpperCase();
