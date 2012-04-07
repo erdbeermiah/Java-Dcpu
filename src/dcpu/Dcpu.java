@@ -3,40 +3,58 @@ package dcpu;
 
 import java.util.Arrays;
 
+/**
+ * @author miah
+ */
 public class Dcpu {
-	private static final int SHORT_MASK = 0xFFFF;
+	/**
+	 * Masks to get clear results from an INT.
+	 */
 	private static final int    OP_MASK = 0xF;
 	private static final int     A_MASK = 0x3F;
 	private static final int     B_MASK = 0x3F;
+	private static final int SHORT_MASK = 0xFFFF;
 	
-	private static final int SHORT_SHIFT = 16;
+	/**
+	 * Shift width to get clear results from an INT.
+	 */
 	private static final int     A_SHIFT = 4;
 	private static final int     B_SHIFT = 10;
+	private static final int SHORT_SHIFT = 16;
 	
+	/**
+	 * Size variables to define the environment.
+	 */
 	private static final int MEMORY_SIZE   = 65536;
 	private static final int NUM_ITERALS   = 32;
 	private static final int NUM_REGISTERS = 8;
 	
-	// ram positions
-	private static final int PC  = 0;
-	private static final int SP  = 1;
-	private static final int OV  = 2;
-	private static final int REG = 3;
-	private static final int LIT = 4;
-	private static final int MEM = 5;
+	/**
+	 * Indices for the variable int[][] ram
+	 * 
+	 * @see Dcpu.ram
+	 */
+	private static final int PC  = 0; // program counter
+	private static final int SP  = 1; // stack pointer
+	private static final int OV  = 2; // overflow
+	private static final int REG = 3; // register
+	private static final int LIT = 4; // literals
+	private static final int MEM = 5; // memory
 	
 	/**
-	 * indices:
-	 *		0 - program counter
-	 *		1 - stack pointer
-	 *		2 - overflow
-	 *		3 - register
-	 *		4 - literals
-	 *		5 - memory
+	 * Store environment.
+	 * 
+	 * @info I'm using an int[][] to be fast and
+	 *       get the ability to simulate pointers
 	 */
 	private int[][] ram = new int[6][];
-	private int     rp  = MEM; // ram position
 	
+	/**
+	 * The current ram position to read from or write to.
+	 * 
+	 * @see Class constants at the top of the class
+	 */
+	private int rp  = MEM; // ram position
 	
 	public Dcpu (int[] program) {
 		ram[PC]  = new int[1];
