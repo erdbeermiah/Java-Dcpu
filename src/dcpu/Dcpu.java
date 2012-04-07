@@ -113,8 +113,7 @@ public class Dcpu {
 	}
 	
 	public boolean step () {
-		// 0xFFFF0000 is the exit code!
-		if (ram[MEM][ram[PC][0]] == 0xFFFF0000) { return false; }
+		if (ram[MEM][ram[PC][0]] == 0x0) { return false; }
 		
 		int code = ram[MEM][ram[PC][0]];
 		int op =  code &  OP_MASK;
