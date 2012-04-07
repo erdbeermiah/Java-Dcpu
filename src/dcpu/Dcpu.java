@@ -37,7 +37,6 @@ public class Dcpu {
 	private int[][] ram = new int[6][];
 	private int     rp  = MEM; // ram position
 	
-	private boolean skipNextWord = false;
 	
 	public Dcpu (int[] program) {
 		ram[PC]  = new int[1];
@@ -109,12 +108,8 @@ public class Dcpu {
 			switch (a) {
 				case 0x01:
 					a = parseVar(b);
-					if (skipNextWord) {
-						skipNextWord = false;
-					} else {
-						ram[MEM][--ram[SP][0]] = ram[PC][0];
-						ram[PC][0] = a;
-					}
+					ram[MEM][--ram[SP][0]] = ram[PC][0];
+					ram[PC][0] = a;
 					break;
 				default:
 					System.err.println("0x0000: Illegal operation! ("+ Integer.toHexString(a) +")");
@@ -129,11 +124,6 @@ public class Dcpu {
 			b = parseVar(b);
 			r = ram[rp];
 
-			if (skipNextWord) {
-				skipNextWord = false;
-				return true;
-			}
-
 			switch (op) {
 				case 0x1: w[a]  = r[b];                                       break;
 				case 0x2: w[a] += r[b];                                       break;
@@ -146,10 +136,10 @@ public class Dcpu {
 				case 0x9: w[a]   &= r[b];                                     break;
 				case 0xA: w[a]   |= r[b];                                     break;
 				case 0xB: w[a]   ^= r[b];                                     break;
-				case 0xC: skipNextWord =  !(w[a] == r[b]);                    break;
-				case 0xD: skipNextWord =  !(w[a] != r[b]);                    break;
-				case 0xE: skipNextWord =  !(w[a] >  r[b]);                    break;
-				case 0xF: skipNextWord = !((w[a] &  r[b]) != 0);              break;
+				case 0xC: if (w[a] != r[b])        { ++ram[PC][0]; }          break;
+				case 0xD: if (w[a] == r[b])        { ++ram[PC][0]; }          break;
+				case 0xE: if (!(w[a] >  r[b]))     { ++ram[PC][0]; }          break;
+				case 0xF: if ((w[a] &  r[b]) == 0) { ++ram[PC][0]; }          break;
 				default:
 					System.err.println("0xFFFF: Illegal operation! ("+ Integer.toHexString(op) +")");
 					System.exit(1);
@@ -164,7 +154,7 @@ public class Dcpu {
 	}
 	
 	public String getHeader () {
-		return "|_PC_|_SP_|_OV_|SKIP|_A__|_B__|_C__|_X__|_Y__|_Z__|_I__|_J__|||_OP_|_A__|_B__|";
+		return "|_PC_|_SP_|_OV_|_A__|_B__|_C__|_X__|_Y__|_Z__|_I__|_J__|||_OP_|_A__|_B__|";
 	}
 	
 	@Override
@@ -173,7 +163,6 @@ public class Dcpu {
 		       hex(ram[PC][0])                                 +" | "+
 		       hex(ram[SP][0])                                 +" | "+
 		       hex(ram[OV][0])                                 +" | "+
-		       hex(skipNextWord ? 1 : 0)                       +" | "+
 		       hex(ram[REG][0])                                +" | "+
 		       hex(ram[REG][1])                                +" | "+
 		       hex(ram[REG][2])                                +" | "+
