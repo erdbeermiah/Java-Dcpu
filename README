@@ -30,6 +30,7 @@ Compiler infos
 		- 0x10-0x17: [next word + register]
 		-      0x1f: next word (literal)
 		- 0x20-0x3f: literal value 0x00-0x1f (literal)
+	- Missing opcode evaluation for 0x0
 	- ugly code :)
 
 ===========================
