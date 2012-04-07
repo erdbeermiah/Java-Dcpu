@@ -1,0 +1,5 @@
+
+:loop
+ADD A, 0x1
+IFN A, 0x3
+	SET PC, loop

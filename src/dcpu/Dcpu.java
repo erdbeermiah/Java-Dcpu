@@ -194,23 +194,14 @@ public class Dcpu {
 	}
 	
 	public static void main(String[] args) {
-		Dcpu cpu = new Dcpu(new int[] {
-			// schreibe 0x1 in register A (0x0) (increment)
-			word(0x1, 0x0, 0x1E), 0x1,
-			// schreibe 0x4 in register B (0x1) (jump lable)
-			word(0x1, 0x1, 0x1E), 0x6,
-			// schreibe 0x2 in register C (0x2) (ziel wert)
-			word(0x1, 0x2, 0x1E), 0x2,
-			// addiere zu register J (0x7) den wert aus register A (0x0)
-			word(0x2, 0x7, 0x0), // <- index 0x6 :)
-			// wenn J (0x7) ungleich C (0x2)
-			//		führe nächste zeile aus
-			//		sonst übernächste
-			word(0xD, 0x7, 0x2),
-			// setze PC (0x1C) auf wert aus register B (0x1)
-			word(0x1, 0x1C, 0x1),
-			0xFFFF0000, // exit
-		});
+		DcpuCompiler c = new DcpuCompiler();
+		int[] code = c.compileString(DcpuCompiler.readFile("src/source/test.x10"));
+		
+		for (int i = 0; i < code.length; i += 1) {
+			System.out.println(hex(code[i], 4));
+		}
+		
+		Dcpu cpu = new Dcpu(code);
 		
 		System.out.println(cpu.getHeader());
 		System.out.println(cpu.toString());
@@ -220,7 +211,7 @@ public class Dcpu {
 	}
 	
 	static int word (int op, int a, int b) {
-		return op + (a << 4) + (b << 10);
+		return op | (a << 4) | (b << 10);
 	}
 	
 	static String hex (int i) {
