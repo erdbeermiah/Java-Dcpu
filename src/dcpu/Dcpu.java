@@ -177,26 +177,26 @@ public class Dcpu {
 	}
 	
 	public String getHeader () {
-		return "|__OP__|__A___|__B___|||__PC__|__SP__|__OV__|__A___|__B___|__C___|__X___|__Y___|__Z___|__I___|__J___|";
+		return "|_OP_|_A__|_B__|||__PC__|__SP__|__OV__|__A___|__B___|__C___|__X___|__Y___|__Z___|__I___|__J___|";
 	}
 	
 	@Override
 	public String toString () {
-		return                                                     "| "+
-		       hex((ram[MEM][ram[PC][0]] & OP_MASK))             +" | "+
-		       hex((ram[MEM][ram[PC][0]] >> A_SHIFT) & A_MASK)   +" | "+
-		       hex((ram[MEM][ram[PC][0]] >> B_SHIFT) & B_MASK)  +" ||| "+
-		       hex(ram[PC][0])                                   +" | "+
-		       hex(ram[SP][0])                                   +" | "+
-		       hex(ram[OV][0])                                   +" | "+
-		       hex(ram[REG][0])                                  +" | "+
-		       hex(ram[REG][1])                                  +" | "+
-		       hex(ram[REG][2])                                  +" | "+
-		       hex(ram[REG][3])                                  +" | "+
-		       hex(ram[REG][4])                                  +" | "+
-		       hex(ram[REG][5])                                  +" | "+
-		       hex(ram[REG][6])                                  +" | "+
-		       hex(ram[REG][7])                                  +" | ";
+		return                                                        "| "+
+		       hex((ram[MEM][ram[PC][0]] & OP_MASK), 2)             +" | "+
+		       hex((ram[MEM][ram[PC][0]] >> A_SHIFT) & A_MASK, 2)   +" | "+
+		       hex((ram[MEM][ram[PC][0]] >> B_SHIFT) & B_MASK, 2)  +" ||| "+
+		       hex(ram[PC][0])                                      +" | "+
+		       hex(ram[SP][0])                                      +" | "+
+		       hex(ram[OV][0])                                      +" | "+
+		       hex(ram[REG][0])                                     +" | "+
+		       hex(ram[REG][1])                                     +" | "+
+		       hex(ram[REG][2])                                     +" | "+
+		       hex(ram[REG][3])                                     +" | "+
+		       hex(ram[REG][4])                                     +" | "+
+		       hex(ram[REG][5])                                     +" | "+
+		       hex(ram[REG][6])                                     +" | "+
+		       hex(ram[REG][7])                                     +" | ";
 	}
 	
 	public static void main(String[] args) {
