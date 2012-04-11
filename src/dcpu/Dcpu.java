@@ -43,9 +43,6 @@ public class Dcpu {
 	
 	/**
 	 * Store environment.
-	 * 
-	 * @info I'm using an int[][] to be fast and
-	 *       get the ability to simulate pointers
 	 */
 	private int[][] ram = new int[6][];
 	
@@ -56,6 +53,14 @@ public class Dcpu {
 	 */
 	private int rp  = MEM; // ram position
 	
+	public Dcpu (Program p) {
+		ram[PC]  = new int[1];
+		ram[SP]  = new int[1];
+		ram[OV]  = new int[1];
+		ram[REG] = new int[NUM_REGISTERS];
+		ram[LIT] = p.lit;
+		ram[MEM] = p.memory;
+	}
 	public Dcpu (int[] program) {
 		ram[PC]  = new int[1];
 		ram[SP]  = new int[1];
@@ -109,6 +114,7 @@ public class Dcpu {
 			return 0;
 		}
 		
+		rp = LIT;
 		return (code - 0x20) % NUM_ITERALS;
 	}
 	
@@ -148,11 +154,11 @@ public class Dcpu {
 				case 0x4: w[a] *= r[b];                                       break;
 				case 0x5: if (r[b] == 0) { w[a] = 0; } else { w[a] /= r[b]; } break;
 				case 0x6: if (r[b] == 0) { w[a] = 0; } else { w[a] &= r[b]; } break;
-				case 0x7: w[a]  <<= r[b];                                     break;
-				case 0x8: w[a] >>>= r[b];                                     break;
-				case 0x9: w[a]   &= r[b];                                     break;
-				case 0xA: w[a]   |= r[b];                                     break;
-				case 0xB: w[a]   ^= r[b];                                     break;
+				case 0x7: w[a] <<= r[b];                                      break;
+				case 0x8: w[a] >>= r[b]; w[a] &= SHORT_MASK;                  break;
+				case 0x9: w[a]  &= r[b];                                      break;
+				case 0xA: w[a]  |= r[b];                                      break;
+				case 0xB: w[a]  ^= r[b];                                      break;
 				case 0xC: if (w[a] != r[b])        { ++ram[PC][0]; }          break;
 				case 0xD: if (w[a] == r[b])        { ++ram[PC][0]; }          break;
 				case 0xE: if (!(w[a] >  r[b]))     { ++ram[PC][0]; }          break;
@@ -171,40 +177,35 @@ public class Dcpu {
 	}
 	
 	public String getHeader () {
-		return "|_PC_|_SP_|_OV_|_A__|_B__|_C__|_X__|_Y__|_Z__|_I__|_J__|||_OP_|_A__|_B__|";
+		return "|__OP__|__A___|__B___|||__PC__|__SP__|__OV__|__A___|__B___|__C___|__X___|__Y___|__Z___|__I___|__J___|";
 	}
 	
 	@Override
 	public String toString () {
-		return                                                   "| "+
-		       hex(ram[PC][0])                                 +" | "+
-		       hex(ram[SP][0])                                 +" | "+
-		       hex(ram[OV][0])                                 +" | "+
-		       hex(ram[REG][0])                                +" | "+
-		       hex(ram[REG][1])                                +" | "+
-		       hex(ram[REG][2])                                +" | "+
-		       hex(ram[REG][3])                                +" | "+
-		       hex(ram[REG][4])                                +" | "+
-		       hex(ram[REG][5])                                +" | "+
-		       hex(ram[REG][6])                                +" | "+
-		       hex(ram[REG][7])                               +" ||| "+
-		       hex((ram[MEM][ram[PC][0]] & OP_MASK))           +" | "+
-		       hex((ram[MEM][ram[PC][0]] >> A_SHIFT) & A_MASK) +" | "+
-		       hex((ram[MEM][ram[PC][0]] >> B_SHIFT) & B_MASK) +" |";
+		return                                                     "| "+
+		       hex((ram[MEM][ram[PC][0]] & OP_MASK))             +" | "+
+		       hex((ram[MEM][ram[PC][0]] >> A_SHIFT) & A_MASK)   +" | "+
+		       hex((ram[MEM][ram[PC][0]] >> B_SHIFT) & B_MASK)  +" ||| "+
+		       hex(ram[PC][0])                                   +" | "+
+		       hex(ram[SP][0])                                   +" | "+
+		       hex(ram[OV][0])                                   +" | "+
+		       hex(ram[REG][0])                                  +" | "+
+		       hex(ram[REG][1])                                  +" | "+
+		       hex(ram[REG][2])                                  +" | "+
+		       hex(ram[REG][3])                                  +" | "+
+		       hex(ram[REG][4])                                  +" | "+
+		       hex(ram[REG][5])                                  +" | "+
+		       hex(ram[REG][6])                                  +" | "+
+		       hex(ram[REG][7])                                  +" | ";
 	}
 	
 	public static void main(String[] args) {
 		DcpuCompiler c = new DcpuCompiler();
-		int[] code = c.compileString(DcpuCompiler.readFile("src/source/test.x10"));
+		Program p = c.compileString(DcpuCompiler.readFile("src/source/test.x10"));
 		
-		for (int i = 0; i < code.length; i += 1) {
-			System.out.println(hex(code[i], 4));
-		}
-		
-		Dcpu cpu = new Dcpu(code);
+		Dcpu cpu = new Dcpu(p);
 		
 		System.out.println(cpu.getHeader());
-		System.out.println(cpu.toString());
 		while (cpu.step()) {
 			System.out.println(cpu.toString());
 		}
@@ -215,7 +216,7 @@ public class Dcpu {
 	}
 	
 	static String hex (int i) {
-		return hex(i, 2);
+		return hex(i, 4);
 	}
 	static String hex (int i, int l) {
 		String h = Integer.toHexString(i).toUpperCase();

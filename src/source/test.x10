@@ -1,5 +1,7 @@
 
+SET A, 0x1
+
 :loop
-ADD A, 0x1
-IFN A, 0x3
+MUL A, 0x2
+IFN A, 0x4
 	SET PC, loop

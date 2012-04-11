@@ -55,7 +55,7 @@ public class DcpuCompiler {
 		VARIABLES = Collections.unmodifiableMap(rep);
 	}
 	
-	public int[] compileString (String source) {
+	public Program compileString (String source) {
 		List<Integer> bytecode = new ArrayList<Integer>();
 		Map<String, Integer> lables = new HashMap<String, Integer>();
 		
@@ -110,8 +110,16 @@ public class DcpuCompiler {
 					word1 |= 0x1e << B_SHIFT;
 					word3  = Integer.parseInt(line[2].replace("0x", ""), 16) & WORD_MASK;
 				} else if (lables.containsKey(line[2])) {
-					word1 |= 0x1e << B_SHIFT;
-					word3  = lables.get(line[2]);
+					int lblId = 0;
+					Set<String> keys = lables.keySet();
+					Iterator<String> it = lables.keySet().iterator();
+					while (it.hasNext()) {
+						if (it.next().equals(line[2])) {
+							break;
+						}
+						lblId += 1;
+					}
+					word1 |= (0x20 + lblId) << B_SHIFT;
 				} else {
 					System.out.println("B NOT IMPLEMENTET YET! ("+ line[2] +") "+ lines[i]);
 					System.exit(1);
@@ -140,7 +148,8 @@ public class DcpuCompiler {
 		for (int i = 0; i < bytecode.size(); i += 1) {
 			bc[i] = bytecode.get(i).intValue();
 		}
-		return bc;
+		return new Program(bc, lables.values());
+		//return bc;
 	}
 	
 	public static String readFile (String file) {
