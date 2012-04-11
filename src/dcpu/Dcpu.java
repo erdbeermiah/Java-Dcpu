@@ -201,7 +201,7 @@ public class Dcpu {
 	
 	public static void main(String[] args) {
 		DcpuCompiler c = new DcpuCompiler();
-		Program p = c.compileString(DcpuCompiler.readFile("src/source/test.x10"));
+		Program p = c.compileString(DcpuCompiler.readFile("src/source/test.dasm16"));
 		
 		Dcpu cpu = new Dcpu(p);
 		
