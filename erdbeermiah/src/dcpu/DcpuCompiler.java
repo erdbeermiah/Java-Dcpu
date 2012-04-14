@@ -85,7 +85,7 @@ public class DcpuCompiler {
 				lines[i] = lines[i].replace(":"+ lable +" ", "");
 			}
 			
-			line = lines[i].split(",? ");
+			line = lines[i].split(", ?| ");
 			
 			if (line.length == 3) {
 				if (!OP_CODES.containsKey(line[0])) {
