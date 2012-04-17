@@ -1,0 +1,3 @@
+[submodule "xZise"]
+	path = xZise
+	url = git@github.com:xZise/dcpu16-java.git
